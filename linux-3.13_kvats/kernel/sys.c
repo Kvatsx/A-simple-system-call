@@ -175,28 +175,39 @@ SYSCALL_DEFINE2(sh_task_info, int, pid, char *, file_name)
 	if ( pid_object == NULL )
 	{
 		printk("Null Pointer Error, Wrong Pid\n");
+		// write(1,"Null Pointer Error, Wrong Pid\n", 30);
+		// print("Null Pointer Error, Wrong Pid\n");
 		retval = -ESRCH;
 		printk("Error no: %d\n", retval);
 		printk("No Such Process\n");
+		// print("Error no: %d\n", retval);
+		// print("No such process\n");
 		goto out;
 	} 
 	task_object = pid_task(pid_object, PIDTYPE_PID);
 	printk("Name: %s\n" , task_object->comm);
 	printk("Pid: %ld\n", task_object->pid);
+	// print("Name: %s\n", task_object->comm);
+	// print("Pid: %ld\n", task_object->pid);
  	if ( pid > 0 )
 	{ 
 		printk("Parent Name: %s\n", task_object->parent->comm);
+		// print("Parent Name: %s\n", task_object->parent->comm);
 		printk("Parent Pid: %ld\n", task_object->parent->pid);
+		// print("Parent Pid: %ld\n", task_object->parent->pid);
 	}
 	else 
 	{
 		retval = -ESRCH;
 		printk("No Parent Process\n");
+		// print("No Parent Process\n");
 		goto out;
 	}
 
 	printk("State: %ld\n", task_object->state);
+	// print("State: %ld\n", task_object->state);
 	printk("Priority: %ld\n", task_object->prio);
+	// print("Priority: %ld\n", task_object->prio);
 
 	int fd;
 	loff_t p = 0;
@@ -246,7 +257,9 @@ SYSCALL_DEFINE2(sh_task_info, int, pid, char *, file_name)
 	else
 	{
 		printk("Error Related to File Name: %s\n",file_name);
+		// print("Error Related to File Name: %s\n",file_name);
 		printk("Invalid argument\n");
+		// print("Invalid argument\n");
 		retval = -EINVAL;
 	}
 	sys_close(fd);
