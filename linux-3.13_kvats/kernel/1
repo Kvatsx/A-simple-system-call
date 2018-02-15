@@ -172,6 +172,7 @@ SYSCALL_DEFINE2(sh_task_info, int, pid, char *, file_name)
 	int retval = 0;
 	struct pid *pid_object;
 	struct task_struct *task_object;
+	struct file *file;
 	
 	pid_object = find_get_pid(pid);
 	if ( pid_object == NULL )
@@ -253,73 +254,25 @@ SYSCALL_DEFINE2(sh_task_info, int, pid, char *, file_name)
 		Len = sprintf(brr, "On_cpu: %d\n", task_object->on_cpu);
 		sys_write(fd, brr, Len);
 		
-		// Sched_Entity
+		//struct thread_info *a = task_object->thread_info;
+		//Len = sprintf(brr, "CPU: %u\n", a->cpu);
+		//sys_write(fd, brr, Len);
+
+		// sched_entity
+		//struct load_weight load = task_object->se->load;
+		//struct rb_node run_node = task_object->se->run_node;
+		// struct list_head group_node = task_object->se->gr
+		//Len = sprintf(brr, "Sched_entity->load->weight: %lu\n", load->weight);
+		//sys_write(fd, brr, Len);
+		
 		struct sched_entity abc  = (struct sched_entity)task_object->se;
-		Len = sprintf(brr, "Sched_entity->on_rq: %u\n", (unsigned int)abc.on_rq);
+		Len = sprintf(brr, "Sched_entity->on_rq: %u\n", (unsigned int)abc->on_rq);
 		sys_write(fd, brr, Len);
 
-		Len = sprintf(brr, "Sched_entity->exec_start: %llu\n", abc.exec_start);
-		sys_write(fd, brr, Len);
-
-		Len = sprintf(brr, "Sched_entity->sum_exec_runtime: %llu\n", abc.sum_exec_runtime);
-		sys_write(fd, brr, Len);
-
-		Len = sprintf(brr, "Sched_entity->vruntime %llu\n", abc.vruntime);
-		sys_write(fd, brr, Len);
+		//Len = sprintf(brr, "Sched_entity->run_node->parent_color: %lu\n", run_node->__rb_parent_color);
+		//sys_write(fd, brr, Len);
 		
-		Len = sprintf(brr, "Sched_entity->prev_sum_exec_runtime %llu\n", abc.prev_sum_exec_runtime);
-		sys_write(fd, brr, Len);
-
-		Len = sprintf(brr, "Sched_entity->nr_migrations %llu\n", abc.nr_migrations);
-		sys_write(fd, brr, Len);
-
-		// Thread_struct
-		struct thread_struct cba = (struct thread_struct)task_object->thread;
-		Len = sprintf(brr, "Thread_struct->sp0 %lu\n", (unsigned long)cba.sp0);
-		sys_write(fd, brr, Len);
-
-		Len = sprintf(brr, "Thread_struct->sp %lu\n", (unsigned long)cba.sp);
-		sys_write(fd, brr, Len);
-
-		Len = sprintf(brr, "Thread_struct->error_code %lu\n", (unsigned long)cba.error_code);
-		sys_write(fd, brr, Len);
-
-		Len = sprintf(brr, "Thread_struct->fpu_counter: %u\n", (unsigned int)cba.fpu_counter);
-		sys_write(fd, brr, Len);
-
-		// Blocked sigset_t
-		sigset_t sblock = task_object->blocked;
-		//unsigned long *p = sblock.sig;
-		int i=0;
-		Len = sprintf(brr, "Blocked: \n");
-		sys_write(fd, brr, Len);
-		
-		for(i=0; i < sizeof(sblock.sig)/sizeof(sblock.sig[0]); i++)
-		{
-			Len = sprintf(brr, "[%d] -->  %lu\n", i, sblock.sig[i]);
-			sys_write(fd, brr, Len);
-		}
-
-
-		// Real_blocked
-		sigset_t sreal = task_object->real_blocked;
-		//unsigned long *q = sreal.sig;
-		int j = 0;
-		Len = sprintf(brr, "Real_blocked: \n");
-		sys_write(fd, brr, Len);
-
-		for(j=0; j < sizeof(sreal.sig)/sizeof(sreal.sig[0]); j++)
-		{
-			Len = sprintf(brr, "[%d] -->  %lu\n", j, sreal.sig[j]);
-			sys_write(fd, brr, Len);
-		}
-		
-		//for ( int qw = 0; qw < sizeof(sreal.sig); qw++ )
-		//{
-		//	Len = sprintf(brr, "%lu\n", sreal.sig[qw]);
-		//	sys_write(fd, brr, Len);
-		//} 
-		
+		//Len = sprintf(brr, "Sched_entity->group_nodes->
 
 	}
 	else
